@@ -1,4 +1,4 @@
-import PathParameters from "./PathParameters.js";
+import PathParameters from "./Pathparameters.js";
 import QueryParameters from "./QueryParameters.js";
 import WorkingWithObjects from "./WorkingWithObjects.js";
 import WorkingWithArrays from "./WorkingWithArrays.js";
