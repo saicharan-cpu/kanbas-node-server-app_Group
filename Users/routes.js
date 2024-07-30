@@ -50,6 +50,19 @@ export default function UserRoutes(app) {
         { message: "Username already taken" });
       return;
     }
+    const pswd = req.body.password;
+    if(!req.body.username)
+        {
+            res.status(400).json(
+                { message: "Please set a UserName" });
+              return;  
+        }
+    if(!pswd)
+        {
+            res.status(400).json(
+                { message: "Please set a Password" });
+              return; 
+        }
     const currentUser = await dao.createUser(req.body);
     req.session["currentUser"] = currentUser;
     res.json(currentUser);
