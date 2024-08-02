@@ -1,26 +1,40 @@
-import Database from "../Database/index.js";
+import * as dao from "./dao.js";
+import mongoose from "mongoose";
+
 export default function CourseRoutes(app) {
-  app.put("/api/courses/:id", (req, res) => {
+  const createCourse = async (req, res) => {
+    let course = req.body;
+      course._id = new mongoose.Types.ObjectId().toString();
+    const newCourse = await dao.createCourse(course);
+    res.json(newCourse);
+  };
+
+  const deleteCourse = async (req, res) => {
+    const status = await dao.deleteCourse(req.params.id);
+    res.json(status);
+  };
+
+  const findAllCourses = async (req, res) => {
+    console.log("Fetching all courses");
+    const courses = await dao.findAllCourses();
+    console.log("Fetched courses:"+courses);
+    res.json(courses);
+  };
+
+  const findCourseById = async (req, res) => {
+    const course = await dao.findCourseById(req.params.id);
+    res.json(course);
+  };
+
+  const updateCourse = async (req, res) => {
     const { id } = req.params;
-    const course = req.body;
-    Database.courses = Database.courses.map((c) =>
-      c._id === id ? { ...c, ...course } : c
-    );
-    res.sendStatus(204);
-  });
-  app.delete("/api/courses/:id", (req, res) => {
-    const { id } = req.params;
-    Database.courses = Database.courses.filter((c) => c._id !== id);
-    res.sendStatus(204);
-  });
-  app.post("/api/courses", (req, res) => {
-    const course = { ...req.body,
-      _id: new Date().getTime().toString() };
-    Database.courses.push(course);
-    res.send(course);
-  });
-  app.get("/api/courses", (req, res) => {
-    const courses = Database.courses;
-    res.send(courses);
-  });
+    const status = await dao.updateCourse(id, req.body);
+    res.json(status);
+  };
+
+  app.post("/api/courses", createCourse);
+  app.get("/api/courses", findAllCourses);
+  app.get("/api/courses/:id", findCourseById);
+  app.put("/api/courses/:id", updateCourse);
+  app.delete("/api/courses/:id", deleteCourse);
 }
