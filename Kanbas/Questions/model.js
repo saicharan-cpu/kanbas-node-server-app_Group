@@ -1,3 +1,4 @@
+// Kanbas/Questions/model.js
 import mongoose from 'mongoose';
 import questionSchema from './schema.js';
 

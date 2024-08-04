@@ -20,6 +20,7 @@ const quizSchema = new mongoose.Schema({
   },
   isShuffled: { type: Boolean, required: true },
   ismultipleAttempts: { type: Boolean, required: true },
+  howManyAttempts: { type: Number, default: 1 },
   isPublished: { type: Boolean, required: true },
   viewResponse: {
     type: String,

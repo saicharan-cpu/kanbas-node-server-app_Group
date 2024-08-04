@@ -21,6 +21,9 @@ export const createQuiz = (cid, quiz) => {
   return QuizModel.create(quiz);
 };
 
-export const updateQuiz = (id, quiz) => QuizModel.updateOne({ _id: id }, { $set: quiz });
+export const updateQuiz = (id, quiz) => {
+    console.log("uodate quizz in dao");
+    return QuizModel.updateOne({ _id: id }, { $set: quiz });
+};
 
 export const deleteQuiz = (id) => QuizModel.deleteOne({ _id: id });
