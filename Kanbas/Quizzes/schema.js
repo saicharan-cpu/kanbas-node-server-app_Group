@@ -1,47 +1,43 @@
-import mongoose from 'mongoose';
-
-const quizSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  courseId: { type: String, required: true },
-  points: { type: Number, required: true },
-  quizType: {
-    type: String,
-    enum: ['Practice Quiz', 'Graded Quiz', 'Graded Survey', 'Ungraded Survey'],
-    default: 'Graded Quiz',
-    required: true
+import mongoose from "mongoose";
+const quizzesSchema = mongoose.Schema(
+  {
+    title: { type: String, required: true },
+    description: { type: String, default: "" },
+    quizType: {
+      type: String,
+      enum: [
+        "Graded Quiz",
+        "Practice Quiz",
+        "Graded Survey",
+        "Ungraded Survey",
+      ],
+      default: "Graded Quiz",
+    },
+    assignmentGroup: {
+      type: String,
+      enum: ["QUIZZES", "EXAMS", "ASSIGNMENTS", "PROJECT"],
+      default: "QUIZZES",
+    },
+    shuffleAnswers: { type: Boolean, default: true },
+    timeLimit: { type: Number, default: 20 },
+    multipleAttempts: { type: Boolean, default: false },
+    showCorrectAnswers: {
+      type: Boolean,
+      default: false,
+    },
+    accessCode: { type: String, default: "" },
+    oneQuestionAtATime: { type: Boolean, default: true },
+    webcamRequired: { type: Boolean, default: false },
+    lockQuestionsAfterAnswering: { type: Boolean, default: false },
+    published: { type: Boolean, default: false },
+    dueDate: { type: Date, },
+    availableDate: { type: Date,  },
+    untilDate: { type: Date,  },
+    points: { type: Number, default: 0 },
+    numQuestions: { type: Number, default: 0 },
+    course: { type: String, required: true },
+    attempts: {type: Number, default: 1},
   },
-  timeLimit: { type: Number, required: true },
-  assignmentGroup: {
-    type: String,
-    enum: ["Quizzes", "Exams", "Assignments", "Project"],
-    default: "Quizzes",
-    required: true
-  },
-  isShuffled: { type: Boolean, required: true },
-  ismultipleAttempts: { type: Boolean, required: true },
-  howManyAttempts: { type: Number, default: 1 },
-  isPublished: { type: Boolean, required: true },
-  viewResponse: {
-    type: String,
-    enum: ["Always"],
-    default: "Always",
-    required: true
-  },
-  showCorrectAnswers: {
-    type: String,
-    enum: ["Immediately", "After all attempts are graded", "After due date"],
-    default: "Immediately",
-    required: true
-  },
-  accessCode: { type: String, required: false },
-  onQuestionAtaTime: { type: Boolean, required: true },
-  webcamRequired: { type: Boolean, required: true },
-  lockQuestionsAfterAnswering: { type: Boolean, required: true },
-  dueDate: { type: Date, required: true },
-  availabilityDate: { type: Date, required: true },
-  untilDate: { type: Date, required: true },
-  questions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }]
-}, { collection: "quizzes" });
-
-export default quizSchema;
+  { collection: "quizzes" }
+);
+export default quizzesSchema;

@@ -1,93 +1,188 @@
+// import * as dao from "./dao.js";
+// import mongoose from 'mongoose';
+
+// export default function QuizzesRoutes(app) {
+
+//   const createQuiz = async (req, res) => {
+//     const { cid } = req.params;
+//     try {
+//       const quiz = await dao.createQuiz(cid, req.body);
+//       res.json(quiz);
+//     } catch (err) {
+//       console.error('Error creating quiz:', err);
+//       res.status(500).send(err);
+//     }
+//   };
+
+//   const deleteQuiz = async (req, res) => {
+//     try {
+//       const status = await dao.deleteQuiz(req.params.qid);
+//       res.json(status);
+//     } catch (err) {
+//       console.error('Error deleting quiz:', err);
+//       res.status(500).send(err);
+//     }
+//   };
+
+//   const findAllQuizzes = async (req, res) => {
+//     try {
+//       const quizzes = await dao.findAllQuizzes();
+//       res.json(quizzes);
+//     } catch (err) {
+//       console.error('Error finding all quizzes:', err);
+//       res.status(500).send(err);
+//     }
+//   };
+
+//   const findQuizById = async (req, res) => {
+//     const { qid } = req.params;
+//     if (!mongoose.Types.ObjectId.isValid(qid)) {
+//       return res.status(400).send("Invalid Quiz ID");
+//     }
+//     try {
+//       const quiz = await dao.findQuizById(qid);
+//       if (quiz) {
+//         res.json(quiz);
+//       } else {
+//         res.sendStatus(404);
+//       }
+//     } catch (err) {
+//       console.error('Error finding quiz by ID:', err);
+//       res.status(500).send(err);
+//     }
+//   };
+
+//   const updateQuiz = async (req, res) => {
+//     try {
+//       const status = await dao.updateQuiz(req.params.qid, req.body);
+//       res.json(status);
+//     } catch (err) {
+//       console.error('Error updating quiz:', err);
+//       res.status(500).send(err);
+//     }
+//   };
+
+//   const findQuizzesForCourse = async (req, res) => {
+//     const { cid } = req.params;
+//     if (!mongoose.Types.ObjectId.isValid(cid)) {
+//       return res.status(400).send("Invalid Course ID");
+//     }
+//     try {
+//       const quizzes = await dao.findQuizzesForCourse(cid);
+//       if (quizzes) {
+//         res.json(quizzes);
+//       } else {
+//         res.sendStatus(404);
+//       }
+//     } catch (err) {
+//       console.error('Error finding quizzes for course:', err);
+//       res.status(500).send(err);
+//     }
+//   };
+
+//   app.post("/api/courses/:cid/quizzes", createQuiz);
+//   app.delete("/api/quizzes/:qid", deleteQuiz);
+//   app.get("/api/quizzes", findAllQuizzes);
+//   app.get("/api/quizzes/:qid", findQuizById);
+//   app.put("/api/quizzes/:qid", updateQuiz);
+//   app.get("/api/courses/:cid/quizzes", findQuizzesForCourse);
+//   app.get("/api/courses/:cid/quizzes/:qid", findQuizById); // Add this line
+// }
 import * as dao from "./dao.js";
-import express from "express";
+import mongoose from 'mongoose';
 
-const router = express.Router();
+export default function QuizzesRoutes(app) {
 
-const createQuiz = async (req, res) => {
+  const createQuiz = async (req, res) => {
+    const { cid } = req.params;
     try {
-        const { cid } = req.params;
-        const quiz = await dao.createQuiz(cid, req.body);
-        res.status(201).json(quiz);
-    } catch (error) {
-        res.status(409).json({ message: error.message });
+      console.log('Creating quiz for course ID:', cid);
+      const quiz = await dao.createQuiz(cid, req.body);
+      res.json(quiz);
+    } catch (err) {
+      console.error('Error creating quiz:', err);
+      res.status(500).send(err);
     }
-};
+  };
 
-const getQuizesForCourse = async (req, res) => {
-  console.log("getting the quizzes for course");
-    try {
-        const { cid } = req.params;
-        const quizes = await dao.findquizesForCourse(cid);
-        res.status(200).json(quizes);
-    } catch (error) {
-        res.status(404).json({ message: error.message });
-    }
-};
-
-const getQuiz = async (req, res) => {
+  const deleteQuiz = async (req, res) => {
     const { qid } = req.params;
     try {
-        const quiz = await dao.findQuiz(qid).populate("questions").exec();
-        res.status(200).json(quiz);
-    } catch (error) {
-        res.status(404).json({ message: error.message });
+      console.log('Deleting quiz with ID:', qid);
+      const status = await dao.deleteQuiz(qid);
+      res.json(status);
+    } catch (err) {
+      console.error('Error deleting quiz:', err);
+      res.status(500).send(err);
     }
-};
+  };
 
-const updateQuiz = async (req, res) => {
-    const { qid } = req.params;
-    let quiz = req.body;
-    console.log("Updating the quizz");
+  const findAllQuizzes = async (req, res) => {
     try {
-        quiz = await dao.updateQuiz(qid, quiz);
+      console.log('Finding all quizzes');
+      const quizzes = await dao.findAllQuizzes();
+      res.json(quizzes);
+    } catch (err) {
+      console.error('Error finding all quizzes:', err);
+      res.status(500).send(err);
+    }
+  };
+
+  const findQuizById = async (req, res) => {
+    const { qid } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(qid)) {
+      return res.status(400).send("Invalid Quiz ID");
+    }
+    try {
+      console.log('Finding quiz with ID:', qid);
+      const quiz = await dao.findQuizById(qid);
+      if (quiz) {
         res.json(quiz);
-    } catch (error) {
-        res.status(409).json({ message: error.message });
+      } else {
+        res.sendStatus(404);
+      }
+    } catch (err) {
+      console.error('Error finding quiz by ID:', err);
+      res.status(500).send(err);
     }
-};
+  };
 
-const deleteQuiz = async (req, res) => {
+  const updateQuiz = async (req, res) => {
     const { qid } = req.params;
-    try {
-        await dao.deleteQuiz(qid);
-        res.sendStatus(200);
-    } catch (error) {
-        res.status(409).json({ message: error.message });
+    if (!mongoose.Types.ObjectId.isValid(qid)) {
+      return res.status(400).send("Invalid Quiz ID");
     }
-};
-
-const publishQuiz = async (req, res) => {
-    const { qid } = req.params;
     try {
-        const quiz = await dao.findQuiz(qid);
-        quiz.isPublished = true;
-        await dao.updateQuiz(qid, quiz);
-        res.status(200).json(quiz);
-    } catch (error) {
-        res.status(409).json({ message: error.message });
+      console.log('Updating quiz with ID:', qid);
+      const status = await dao.updateQuiz(qid, req.body);
+      res.json(status);
+    } catch (err) {
+      console.error('Error updating quiz:', err);
+      res.status(500).send(err);
     }
-};
+  };
 
-const unpublishQuiz = async (req, res) => {
-    const { qid } = req.params;
+  const findQuizzesForCourse = async (req, res) => {
+    const { cid } = req.params;
     try {
-        const quiz = await dao.findQuiz(qid);
-        quiz.isPublished = false;
-        await dao.updateQuiz(qid, quiz);
-        res.status(200).json(quiz);
-    } catch (error) {
-        res.status(409).json({ message: error.message });
+      console.log('Finding quizzes for course ID:', cid);
+      const quizzes = await dao.findQuizzesForCourse(cid);
+      if (quizzes) {
+        res.json(quizzes);
+      } else {
+        res.sendStatus(404);
+      }
+    } catch (err) {
+      console.error('Error finding quizzes for course:', err);
+      res.status(500).send(err);
     }
-};
+  };
 
-router.post("/api/courses/:cid/quizzes", createQuiz);
-router.get("/api/courses/:cid/quizzes", getQuizesForCourse);
-router.get("/api/quizzes/:qid/publish", publishQuiz);
-router.get("/api/quizzes/:qid/unpublish", unpublishQuiz);
-router.get("/api/quizzes/:qid", getQuiz);
-router.put("/api/quizzes/:qid", updateQuiz);
-router.delete("/api/quizzes/:qid", deleteQuiz);
-
-export default function QuizRoutes(app) {
-    app.use(router);
+  app.post("/api/courses/:cid/quizzes", createQuiz);
+  app.delete("/api/quizzes/:qid", deleteQuiz);
+  app.get("/api/quizzes", findAllQuizzes);
+  app.get("/api/quizzes/:qid", findQuizById);
+  app.put("/api/quizzes/:qid", updateQuiz);
+  app.get("/api/courses/:cid/quizzes", findQuizzesForCourse);
+  app.get("/api/courses/:cid/quizzes/:qid", findQuizById); // Add this line
 }

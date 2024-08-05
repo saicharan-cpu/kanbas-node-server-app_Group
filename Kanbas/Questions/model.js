@@ -1,6 +1,5 @@
-// Kanbas/Questions/model.js
-import mongoose from 'mongoose';
-import questionSchema from './schema.js';
-
-const QuestionModel = mongoose.model('Question', questionSchema);
-export default QuestionModel;
+import mongoose from "mongoose";
+import schema from "./schema.js";
+const model = mongoose.model("QuestionModel", schema);
+export default model;
+ 

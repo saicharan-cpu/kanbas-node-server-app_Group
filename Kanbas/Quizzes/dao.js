@@ -1,29 +1,68 @@
+import mongoose from 'mongoose';
 import QuizModel from './model.js';
-import QuestionModel from '../Questions/model.js'; // Import the Question model
 
-export const findquizesForCourse = async (courseId) => {
+export const createQuiz = async (courseId, quiz) => {
+  delete quiz._id; // Remove _id if present
+  const newQuiz = { ...quiz, course: courseId };
+  const createdQuiz = await QuizModel.create(newQuiz);
+  return createdQuiz;
+};
+
+
+export const findAllQuizzes = async () => {
   try {
-    console.log(`Finding quizzes for course ID: ${courseId}`);
-    const quizzes = await QuizModel.find({ courseId: courseId }).populate('questions').lean();
-    console.log(`Quizzes found: ${quizzes.length}`);
+    const quizzes = await QuizModel.find();
     return quizzes;
   } catch (error) {
-    console.error(`Error finding quizzes for course ID ${courseId}:`, error);
+    console.error('Error finding quizzes:', error);
     throw error;
   }
-};
+}
 
-export const findQuiz = (id) => QuizModel.findById(id).populate('questions');
+export const findQuizById = async (quizId) => {
+  try {
+    const quiz = await QuizModel.findById(quizId);
+    console.log("finding the quiz with id"+quizId+" is:"+JSON.stringify(quiz));
+    return quiz;
+  } catch (error) {
+    console.error('Error finding quiz by ID:', error);
+    throw error;
+  }
+}
 
-export const createQuiz = (cid, quiz) => {
-  delete quiz._id;
-  quiz.courseId = cid;
-  return QuizModel.create(quiz);
-};
+export const updateQuiz = async (quizId, quiz) => {
+  if (!mongoose.Types.ObjectId.isValid(quizId)) {
+    throw new Error(`Invalid quizId: ${quizId}`);
+  }
+  try {
+    const updatedQuiz = await QuizModel.updateOne({ _id: quizId }, { $set: quiz });
+    return updatedQuiz;
+  } catch (error) {
+    console.error('Error updating quiz:', error);
+    throw error;
+  }
+}
 
-export const updateQuiz = (id, quiz) => {
-    console.log("uodate quizz in dao");
-    return QuizModel.updateOne({ _id: id }, { $set: quiz });
-};
+export const deleteQuiz = async (quizId) => {
+  if (!mongoose.Types.ObjectId.isValid(quizId)) {
+    throw new Error(`Invalid quizId: ${quizId}`);
+  }
+  try {
+    const result = await QuizModel.deleteOne({ _id: quizId });
+    return result;
+  } catch (error) {
+    console.error('Error deleting quiz:', error);
+    throw error;
+  }
+}
 
-export const deleteQuiz = (id) => QuizModel.deleteOne({ _id: id });
+export const findQuizzesForCourse = async (courseId) => {
+  try {
+    const quizzes = await QuizModel.find({ course: courseId });
+    return quizzes;
+  } catch (error) {
+    console.error('Error finding quizzes for course:', error);
+    throw error;
+  }
+}
+

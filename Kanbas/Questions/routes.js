@@ -1,56 +1,142 @@
-import express from "express";
+// import * as dao from "./dao.js";
+ 
+// export default function QuestionsRoutes(app) {
+ 
+//   const createQuestion = async (req, res) => {
+//     const { quizId } = req.params;
+//     try {
+//       const question = await dao.createQuestion(quizId, req.body);
+//       res.json(question);
+//     } catch (err) {
+//       res.status(500).send(err);
+//     }
+//   }
+ 
+//   const deleteQuestion = async (req, res) => {
+//     try {
+//       const status = await dao.deleteQuestion(req.params.questionId);
+//       res.json(status);
+//     } catch (err) {
+//       res.status(500).send(err);
+//     }
+//   }
+ 
+//   const updateQuestion = async (req, res) => {
+//     try {
+//       const status = await dao.updateQuestion(req.params.questionId, req.body);
+//       res.json(status);
+//     } catch (err) {
+//       res.status(500).send(err);
+//     }
+//   }
+ 
+//   const findAllQuestionsByQuizId = async (req, res) => {
+//     try {
+//       const { quizId } = req.params;
+//       const questions = await dao.findAllQuestionsByQuizId(quizId);
+//       console.log(`Finding questions for quiz ID: ${quizId}`);
+//       res.json(questions);
+//     } catch (err) {
+//       console.error(`Error finding questions: ${error.message}`);
+
+//       res.status(500).send(err);
+//     }
+//   }
+ 
+//   const findQuestionById = async (req, res) => {
+//     try {
+//       const question = await dao.findQuestionById(req.params.questionId);
+//       if (question) {
+//         res.json(question);
+//       } else {
+//         res.sendStatus(404);
+//       }
+//     } catch (err) {
+//       res.status(500).send(err);
+//     }
+//   }
+
+//   const getQuizDetails = async (req, res) => {
+//   try {
+//     const quizId = req.params.quizId;
+//     const quiz = await Quiz.findById(quizId);
+//     if (!quiz) {
+//       return res.status(404).json({ message: 'Quiz not found' });
+//     }
+//     res.json(quiz);
+//   } catch (error) {
+//     console.error('Error fetching quiz details:', error);
+//     res.status(500).json({ message: 'Server error' });
+//   }
+// };
+
+ 
+//   app.post("/api/quizzes/:quizId/questions", createQuestion);
+//   app.delete("/api/questions/:questionId", deleteQuestion);
+//   app.put("/api/questions/:questionId", updateQuestion);
+//   app.get("/api/quizzes/:quizId/questions", findAllQuestionsByQuizId);
+//   app.get("/api/questions/:questionId", findQuestionById);
+//   app.get('/api/quizzes/:quizId', getQuizDetails); 
+// }
+ 
 import * as dao from "./dao.js";
 
-const router = express.Router();
+export default function QuestionsRoutes(app) {
 
-const createQuestion = async (req, res) => {
+  const createQuestion = async (req, res) => {
+    const { quizId } = req.params;
     try {
-        const { quizId } = req.params;
-        const { questionType, ...question } = req.body;
-        const createdQuestion = await dao.createQuestion(quizId, { ...question, questionType });
-        res.status(201).json(createdQuestion);
-    } catch (error) {
-        res.status(409).json({ message: error.message });
+      const question = await dao.createQuestion(quizId, req.body);
+      res.json(question);
+    } catch (err) {
+      res.status(500).send(err);
     }
-};
+  }
 
-const getQuestion = async (req, res) => {
+  const deleteQuestion = async (req, res) => {
     try {
-        const { id } = req.params;
-        const question = await dao.findQuestion(id);
-        res.status(200).json(question);
-    } catch (error) {
-        res.status(404).json({ message: error.message });
+      const status = await dao.deleteQuestion(req.params.questionId);
+      res.json(status);
+    } catch (err) {
+      res.status(500).send(err);
     }
-};
+  }
 
-const getQuestionsForQuiz = async (req, res) => {
+  const updateQuestion = async (req, res) => {
     try {
-        const { quizId } = req.params;
-        console.log("Fteching questions for quiz:"+quizId);
-        const questions = await dao.findQuestionByQuiz(quizId);
-        res.status(200).json(questions);
-    } catch (error) {
-        res.status(404).json({ message: error.message });
+      const status = await dao.updateQuestion(req.params.questionId, req.body);
+      res.json(status);
+    } catch (err) {
+      res.status(500).send(err);
     }
-};
+  }
 
-const updateQuestion = async (req, res) => {
-    const { id } = req.params;
-    const question = req.body;
+  const findAllQuestionsByQuizId = async (req, res) => {
     try {
-        const updatedQuestion = await dao.updateQuestion(id, question);
-        res.json(updatedQuestion);
-    } catch (error) {
-        res.status(409).json({ message: error.message });
+      const { quizId } = req.params;
+      const questions = await dao.findAllQuestionsByQuizId(quizId);
+      res.json(questions);
+    } catch (err) {
+      res.status(500).send(err);
     }
-};
+  }
 
-router.post('/api/quizzes/:quizId/questions', createQuestion);
-router.put('/api/quizzes/:quizId/questions/:id', updateQuestion);
-router.get('/api/quizzes/:quizId/questions/:id', getQuestion);
-router.get('/api/quizzes/:quizId/questions', getQuestionsForQuiz);
+  const findQuestionById = async (req, res) => {
+    try {
+      const question = await dao.findQuestionById(req.params.questionId);
+      if (question) {
+        res.json(question);
+      } else {
+        res.sendStatus(404);
+      }
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  }
 
-export default function QuestionRoutes(app) {
-    app.use(router);
+  app.post("/api/quizzes/:quizId/questions", createQuestion);
+  app.delete("/api/questions/:questionId", deleteQuestion);
+  app.put("/api/questions/:questionId", updateQuestion);
+  app.get("/api/quizzes/:quizId/questions", findAllQuestionsByQuizId);
+  app.get("/api/questions/:questionId", findQuestionById);
 }
