@@ -37,6 +37,7 @@ const quizzesSchema = mongoose.Schema(
     numQuestions: { type: Number, default: 0 },
     course: { type: String, required: true },
     attempts: {type: Number, default: 1},
+    userAttempts:[{type : String, required:false}]
   },
   { collection: "quizzes" }
 );
