@@ -17,20 +17,26 @@ console.log("CREATE" + newAnswer.answers)
   return AnswerModel.create(newAnswer);
 };
 
-export const updateAnswer = (userId, questionId, answer) => {
-    console.log("Updating in dao: " + answer)
-    return AnswerModel.updateOne(
-        { userId: userId, questionId: questionId },
-        {
-            $set: {
-                answers: answer.answer,
-            score: answer.score} },
+export const updateAnswer = async (userId, questionId, answer) => {
+  console.log("Updating in dao: " + answer);
+  try {
+      await AnswerModel.deleteOne({ userId: userId, questionId: questionId });
+      const newAnswer = {
+          quizId: answer.quizId,
+          userId: userId,
+          answers: answer.answer,
+          questionId: questionId,
+          score: answer.score,
+          attemptNumber: answer.attemptNumber,
+          submittedAt: new Date()
+      };
 
-    console.log("Answer in dao: " + answer.answer)
-    // { upsert: true }
-  );
+      const createdAnswer = await AnswerModel.create(newAnswer);
+      console.log("Answer saved in dao: " + createdAnswer.answers);
+  } catch (error) {
+      console.error("Error updating answer in dao:", error);
+  }
 };
-
 export const fetchAnswer = (userId, questionId) => {
     
   return AnswerModel.findOne({ userId, questionId });
