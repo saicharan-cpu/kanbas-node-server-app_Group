@@ -20,10 +20,7 @@ console.log("CREATE" + newAnswer.answers)
 export const updateAnswer = async (userId, questionId, answer) => {
   console.log("Updating in dao: " + answer);
   try {
-      // Delete the existing answer
       await AnswerModel.deleteOne({ userId: userId, questionId: questionId });
-
-      // Insert the new answer
       const newAnswer = {
           quizId: answer.quizId,
           userId: userId,
