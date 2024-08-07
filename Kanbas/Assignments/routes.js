@@ -1,5 +1,6 @@
 import Database from "../Database/index.js";
 
+
 export default function AssignmentRoutes(app) {
 
   app.get("/api/assignments", (req, res) => {
