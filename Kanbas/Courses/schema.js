@@ -8,7 +8,8 @@ const courseSchema = new mongoose.Schema({
   endDate: { type: Date, required: true },
   department: { type: String, required: false },
   credits: { type: Number, required: false },
-  description: { type: String, required: true }
+  description: { type: String, required: true },
+  // enrolled: [String]
 }, { collection: "courses" });
 
 export default courseSchema;

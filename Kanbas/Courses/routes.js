@@ -32,9 +32,29 @@ export default function CourseRoutes(app) {
     res.json(status);
   };
 
+  const enrollUser = async (req, res) => {
+    try {
+      const { id, userId } = req.params;
+      console.log(`Current user id: ${userId}`);
+     
+      const result = await dao.enrollUserInCourse(id, userId);
+ 
+      // Check if any documents were matched and the operation was acknowledged
+      if (result.matchedCount > 0 && result.acknowledged) {
+        res.status(200).json(result);
+      } else {
+        res.status(404).json({ message: 'Course not found or user already enrolled' });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: error.message });
+    }
+  };
+
   app.post("/api/courses", createCourse);
   app.get("/api/courses", findAllCourses);
   app.get("/api/courses/:id", findCourseById);
   app.put("/api/courses/:id", updateCourse);
   app.delete("/api/courses/:id", deleteCourse);
+  app.put('/api/courses/:id/enroll/:userId', enrollUser);
 }
