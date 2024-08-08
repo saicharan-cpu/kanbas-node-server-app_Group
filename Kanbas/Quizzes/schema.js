@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 const quizzesSchema = mongoose.Schema(
   {
-    title: { type: String, required: true },
+    title: { type: String,default:"Quiz", required: true },
     description: { type: String, default: "" },
     quizType: {
       type: String,
