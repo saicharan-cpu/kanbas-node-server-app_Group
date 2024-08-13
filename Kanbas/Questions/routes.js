@@ -32,10 +32,10 @@ export default function QuestionsRoutes(app) {
     }
   }
 
-  const findAllQuestionsByQuizId = async (req, res) => {
+  const findQuestionsByQuizId = async (req, res) => {
     try {
       const { quizId } = req.params;
-      const questions = await dao.findAllQuestionsByQuizId(quizId);
+      const questions = await dao.findQuestionsByQuizId(quizId);
       res.json(questions);
     } catch (err) {
       res.status(500).send(err);
@@ -58,6 +58,6 @@ export default function QuestionsRoutes(app) {
   app.post("/api/quizzes/:quizId/questions", createQuestion);
   app.delete("/api/questions/:questionId", deleteQuestion);
   app.put("/api/questions/:questionId", updateQuestion);
-  app.get("/api/quizzes/:quizId/questions", findAllQuestionsByQuizId);
+  app.get("/api/quizzes/:quizId/questions", findQuestionsByQuizId);
   app.get("/api/questions/:questionId", findQuestionById);
 }

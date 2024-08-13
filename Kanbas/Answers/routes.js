@@ -1,5 +1,21 @@
 import * as dao from './dao.js';
 
+const fetchAnswer = async (req, res) => {
+  try {
+      const { userId, questionId } = req.params;
+    const answer = await dao.fetchAnswer(userId, questionId);
+      console.log("USER ID in fetch answer routes: " + userId)
+
+      if (answer) {
+      res.json(answer);
+    } else {
+      res.status(404).send('Answer not found');
+    }
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
 export default function AnswerRoutes(app) {
     const createAnswer = async (req, res) => {
         const { questionId }=  req.params;
@@ -11,6 +27,18 @@ export default function AnswerRoutes(app) {
       res.status(500).send(error.message);
     }
   };
+
+  
+  const fetchAnswersForQuiz = async (req, res) => {
+    try {
+      console.log("Fetching answers")
+    const { userId, quizId } = req.params;
+    const answers = await dao.fetchAnswersForQuiz(userId, quizId);
+    res.json(answers);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
 
   const updateAnswer = async (req, res) => {
       try {
@@ -24,35 +52,11 @@ export default function AnswerRoutes(app) {
     }
   };
 
-  const fetchAnswer = async (req, res) => {
-    try {
-        const { userId, questionId } = req.params;
-      const answer = await dao.fetchAnswer(userId, questionId);
-        console.log("USER ID in fetch answer routes: " + userId)
 
-        if (answer) {
-        res.json(answer);
-      } else {
-        res.status(404).send('Answer not found');
-      }
-    } catch (error) {
-      res.status(500).send(error.message);
-    }
-  };
-
-  const fetchAllAnswersForQuiz = async (req, res) => {
-      try {
-        console.log("Fetching answers")
-      const { userId, quizId } = req.params;
-      const answers = await dao.fetchAllAnswersForQuiz(userId, quizId);
-      res.json(answers);
-    } catch (error) {
-      res.status(500).send(error.message);
-    }
-  };
+  app.get('/api/answers/:userId/quiz/:quizId', fetchAnswersForQuiz);
+  app.get('/api/answers/:userId/:questionId', fetchAnswer);
 
   app.post('/api/answers/:questionId/answers', createAnswer);
   app.put('/api/answers/:userId/:questionId/stored', updateAnswer);
-  app.get('/api/answers/:userId/:questionId', fetchAnswer);
-  app.get('/api/answers/:userId/quiz/:quizId', fetchAllAnswersForQuiz);
+
 }

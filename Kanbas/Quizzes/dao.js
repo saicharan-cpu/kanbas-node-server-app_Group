@@ -1,15 +1,17 @@
 import mongoose from 'mongoose';
 import QuizModel from './model.js';
 
-export const createQuiz = async (courseId, quiz) => {
-  delete quiz._id; // Remove _id if present
-  const newQuiz = { ...quiz, course: courseId };
-  const createdQuiz = await QuizModel.create(newQuiz);
-  return createdQuiz;
-};
+export const findQuizzesForCourse = async (courseId) => {
+  try {
+    const quizzes = await QuizModel.find({ course: courseId });
+    return quizzes;
+  } catch (error) {
+    console.error('Error finding quizzes for course:', error);
+    throw error;
+  }
+}
 
-
-export const findAllQuizzes = async () => {
+export const findQuizzes = async () => {
   try {
     const quizzes = await QuizModel.find();
     return quizzes;
@@ -22,13 +24,19 @@ export const findAllQuizzes = async () => {
 export const findQuizById = async (quizId) => {
   try {
     const quiz = await QuizModel.findById(quizId);
-    console.log("finding the quiz with id"+quizId+" is:"+JSON.stringify(quiz));
     return quiz;
   } catch (error) {
     console.error('Error finding quiz by ID:', error);
     throw error;
   }
 }
+
+export const createQuiz = async (courseId, quiz) => {
+  delete quiz._id;
+  const newQuiz = { ...quiz, course: courseId };
+  const createdQuiz = await QuizModel.create(newQuiz);
+  return createdQuiz;
+};
 
 export const updateQuiz = async (quizId, quiz) => {
   if (!mongoose.Types.ObjectId.isValid(quizId)) {
@@ -52,16 +60,6 @@ export const deleteQuiz = async (quizId) => {
     return result;
   } catch (error) {
     console.error('Error deleting quiz:', error);
-    throw error;
-  }
-}
-
-export const findQuizzesForCourse = async (courseId) => {
-  try {
-    const quizzes = await QuizModel.find({ course: courseId });
-    return quizzes;
-  } catch (error) {
-    console.error('Error finding quizzes for course:', error);
     throw error;
   }
 }
